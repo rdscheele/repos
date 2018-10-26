@@ -3,5 +3,11 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Page</h2>
 
+<p>
+    This is a page.<br />
+    @Html.ActionLink("Add 10 messages to the service bus queue", "SendMessage")
+    <br />
+      @ViewBag.Result
+</p>
