@@ -1,3 +1,0 @@
-C:\Users\r.d.scheele\source\repos\TestApp\TestApp\obj\Debug\netcoreapp2.1\TestApp.csproj.CoreCompileInputs.cache
-C:\Users\r.d.scheele\source\repos\TestApp\TestApp\obj\Debug\netcoreapp2.1\TestApp.AssemblyInfoInputs.cache
-C:\Users\r.d.scheele\source\repos\TestApp\TestApp\obj\Debug\netcoreapp2.1\TestApp.AssemblyInfo.cs
