@@ -51,6 +51,8 @@ namespace FrontEndApplication.Controllers
 
                     // Send the message to the queue.
                     await queueClient.SendAsync(message);
+
+                    //await Task.Delay(5000);
                 }
             }
             catch (Exception exception)
