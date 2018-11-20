@@ -20,7 +20,7 @@ namespace FrontEndApplication.Controllers
         const string ServiceBusConnectionString = "Endpoint=sb://wellprototype.servicebus.windows.net/;SharedAccessKeyName=master;SharedAccessKey=2uWqgYUl+0PZerFo4qrVPLj1pOiaZGUHDDnXc8I8Umg=";
         const string QueueName = "wellqueue";
         static IQueueClient queueClient;
-        const string StorageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bbwelldata;AccountKey=fK2i08pNdKOB6nHQYwvvS42EJBegLRlHvqz3IBKsxMkVhkfjmNQJMLzZjFJ71Mnf5+G67t4ajR6usvHLNJVilA==;EndpointSuffix=core.windows.net";
+        const string StorageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bbwelldata;AccountKey=jH9MnJI2M7QMZAgAmmYybD7fUYKIzWg45q6lmZqEO4QuhtP1qy3ocsB8YuBuAdEFwgbJFpE1XIGn/ywmSWlrkg==;EndpointSuffix=core.windows.net";
 
         // Portal page
         public IActionResult Index()
@@ -32,7 +32,7 @@ namespace FrontEndApplication.Controllers
         public IActionResult SendMessage()
         {
             Random rnd = new Random();
-            int numberOfMessages = rnd.Next(1, 20);
+            int numberOfMessages = 40;//rnd.Next(1, 20);
 
             MainAsync(numberOfMessages).GetAwaiter().GetResult();
             ViewBag.Result = "A total of " + numberOfMessages + " messages have been send!";
