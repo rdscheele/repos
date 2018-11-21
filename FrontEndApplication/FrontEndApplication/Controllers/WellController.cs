@@ -16,11 +16,13 @@ namespace FrontEndApplication.Controllers
 {
     public class WellController : Controller
     {
+        private static string ServiceBusKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\service_bus_key.txt");
+        private static string StorageAccountKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\storage_account_key.txt");
         // Create service bus connection
-        const string ServiceBusConnectionString = "Endpoint=sb://wellprototype.servicebus.windows.net/;SharedAccessKeyName=master;SharedAccessKey=2uWqgYUl+0PZerFo4qrVPLj1pOiaZGUHDDnXc8I8Umg=";
-        const string QueueName = "wellqueue";
+        private static string ServiceBusConnectionString = "Endpoint=sb://wellprototype.servicebus.windows.net/;SharedAccessKeyName=master;SharedAccessKey=" + ServiceBusKey;
+        private static string QueueName = "wellqueue";
         static IQueueClient queueClient;
-        const string StorageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bbwelldata;AccountKey=jH9MnJI2M7QMZAgAmmYybD7fUYKIzWg45q6lmZqEO4QuhtP1qy3ocsB8YuBuAdEFwgbJFpE1XIGn/ywmSWlrkg==;EndpointSuffix=core.windows.net";
+        private static string StorageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bbwelldata;AccountKey=" + StorageAccountKey + ";EndpointSuffix=core.windows.net";
 
         // Portal page
         public IActionResult Index()
