@@ -16,13 +16,13 @@ namespace FrontEndApplication.Controllers
 {
     public class WellController : Controller
     {
-        private static string ServiceBusKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\service_bus_key.txt");
-        private static string StorageAccountKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\storage_account_key.txt");
+        private static readonly string serviceBusKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\service_bus_key.txt");
+        private static readonly string storageAccountKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\storage_account_key.txt");
         // Create service bus connection
-        private static string ServiceBusConnectionString = "Endpoint=sb://wellprototype.servicebus.windows.net/;SharedAccessKeyName=master;SharedAccessKey=" + ServiceBusKey;
-        private static string QueueName = "wellqueue";
+        private static readonly string serviceBusConnectionString = "Endpoint=sb://wellprototype.servicebus.windows.net/;SharedAccessKeyName=master;SharedAccessKey=" + serviceBusKey;
+        private static readonly string queueName = "wellqueue";
         static IQueueClient queueClient;
-        private static string StorageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bbwelldata;AccountKey=" + StorageAccountKey + ";EndpointSuffix=core.windows.net";
+        private static readonly string storageAccountConnectionString = "DefaultEndpointsProtocol=https;AccountName=bbwelldata;AccountKey=" + storageAccountKey + ";EndpointSuffix=core.windows.net";
 
         // Portal page
         public IActionResult Index()
