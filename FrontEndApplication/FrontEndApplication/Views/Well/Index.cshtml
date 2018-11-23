@@ -7,7 +7,9 @@
 
 <p>
     This is a page.<br />
-    @Html.ActionLink("Add a random number between 1 and 20 messages to the service bus queue", "SendMessage")
+    @Html.ActionLink("Send 6 large sized messages to the queue", "SendMessage", new { size = "large" })<br />
+    @Html.ActionLink("Send 48 medium sized messages to the queue", "SendMessage", new { size = "medium" })<br />
+    @Html.ActionLink("Send 96 small sized messages to the queue", "SendMessage", new { size = "small" })
     <br />
-      @ViewBag.Result
+    @ViewBag.Result
 </p>

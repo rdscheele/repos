@@ -31,28 +31,26 @@ namespace FrontEndApplication.Controllers
         }
 
         // Portal page after a message is send
-        public IActionResult SendMessage()
+        public IActionResult SendMessage(string size)
         {
-            Random rnd = new Random();
-            int numberOfMessages = 40;//rnd.Next(1, 20);
+            MainAsync(size).GetAwaiter().GetResult();
+            ViewBag.Result = "Items with a " + size + " size have created messages and have been send to the service bus!";
 
-            MainAsync(numberOfMessages).GetAwaiter().GetResult();
-            ViewBag.Result = "A total of " + numberOfMessages + " messages have been send!";
             return View("Index");
         }
 
-        private static async Task MainAsync(int numberOfMessages)
+        private static async Task MainAsync(string messageSize)
         {
-            queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
+            queueClient = new QueueClient(serviceBusConnectionString, queueName);
 
             // Send messages.
-            await SendMessagesAsync(numberOfMessages);
+            await SendMessagesAsync(messageSize);
 
             await queueClient.CloseAsync();
         }
 
         // Send and upload messages
-        private static async Task SendMessagesAsync(int numberOfMessagesToSend)
+        private static async Task SendMessagesAsync(string messageSize)
         {
             Random rnd = new Random();
             // Create storage container for the incoming messages
@@ -60,6 +58,31 @@ namespace FrontEndApplication.Controllers
 
             // Create a blob container to save the message in
             await CreateBlobContainer(subDomain);
+
+            int numberOfMessagesToSend = 0;
+            int fakeCpu = 0;
+            int fakeMemory = 0;
+
+
+            if (messageSize == "small")
+            {
+                numberOfMessagesToSend = 96;
+                fakeCpu = 2;
+                fakeMemory = 100000000;
+            }
+            if (messageSize == "medium")
+            {
+                numberOfMessagesToSend = 48;
+                fakeCpu = 5;
+                fakeMemory = 200000000;
+            }
+            if (messageSize == "large")
+            {
+                numberOfMessagesToSend = 6;
+                fakeCpu = 20;
+                fakeMemory = 700000000;
+            }
+
 
             try
             {
@@ -72,7 +95,8 @@ namespace FrontEndApplication.Controllers
                     SaveToBlobAsync(subDomain, messageId);
 
                     // Generate the message for the service bus queue
-                    Message message = GenerateQueueMessage(subDomain, messageId, numberOfMessagesToSend);
+                    // Message format subdomain;messageId;numberOfMessagesInBatch;fakeCpuValueToBeUsed;fakeMemoryValueToBeUsed
+                    Message message = GenerateQueueMessage(subDomain, messageId, numberOfMessagesToSend, fakeCpu, fakeMemory);
 
                     // Send the message to the queue.
                     await queueClient.SendAsync(message);
@@ -87,9 +111,9 @@ namespace FrontEndApplication.Controllers
         }
 
         // Generate the contents of the message
-        private static Message GenerateQueueMessage(string subDomain, string messageId, int numberOfMessagesToSend)
+        private static Message GenerateQueueMessage(string subDomain, string messageId, int numberOfMessagesToSend, int fakeCpu, int fakeMemory)
         {
-            string messageBody = subDomain + ";" + messageId + ".jpeg" + ";" + numberOfMessagesToSend.ToString();
+            string messageBody = subDomain + ";" + messageId + ".jpeg" + ";" + numberOfMessagesToSend.ToString() + ";" + fakeCpu.ToString() + ";" + fakeMemory.ToString();
             Message message = new Message(Encoding.UTF8.GetBytes(messageBody));
             Console.WriteLine("Message body; " + messageBody);
             return message;
@@ -104,7 +128,7 @@ namespace FrontEndApplication.Controllers
             System.IO.File.Move(file, newFileName);
 
             // Retrieve storage account from connection string.
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageAccountConnectionString);
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageAccountConnectionString);
 
             // Create the blob client.
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
@@ -122,7 +146,7 @@ namespace FrontEndApplication.Controllers
         private static async Task CreateBlobContainer(string subDomain)
         {
             // Retrieve storage account from connection string.
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(StorageAccountConnectionString);
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageAccountConnectionString);
 
             // Create the blob client.
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
