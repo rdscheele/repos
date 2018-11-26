@@ -74,7 +74,7 @@ namespace FrontEndApplication.Controllers
             {
                 numberOfMessagesToSend = 48;
                 fakeCpu = 5;
-                fakeMemory = 200000000;
+                fakeMemory = 400000000;
             }
             if (messageSize == "large")
             {
