@@ -32,6 +32,22 @@ namespace FrontEndApplication.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ClearQueueAsync()
+        {
+            await ClearMessageQueue();
+
+            ViewBag.Result = "The entire servicebus queue has been cleared";
+            return View("Index");
+        }
+
+        public async Task ClearMessageQueue()
+        {
+            queueClient = new QueueClient(serviceBusConnectionString, queueName);
+            //queueClient.RegisterMessageHandler(
+            //await await queueClient.CompleteAsync(message.SystemProperties.LockToken));
+            await queueClient.CloseAsync();
+        }
+
         // Portal page after a message is send
         public IActionResult SendMessage(string size)
         {
