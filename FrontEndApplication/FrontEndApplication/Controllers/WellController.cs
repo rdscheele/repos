@@ -39,12 +39,12 @@ namespace FrontEndApplication.Controllers
 
             List<MessageObject> messageList = (List<MessageObject>)TempData["messagelist"];
             string messageString = "Items with a " + size + " size have created messages and have been send to the service bus!";
-            //string[] stringList = new string[] { "Items with a " + size + " size have created messages and have been send to the service bus!" };
             var sb = new System.Text.StringBuilder();
             sb.AppendLine(messageString);
+            sb.AppendLine("<br/>The messages are constructed as follows:");
+            sb.AppendLine("<br/>subdomain;messageId;numberOfMessagesInBatch;fakeCpuValueToBeUsed;fakeMemoryValueToBeUsed");
             foreach (MessageObject item in messageList){
-                //stringList.Append(item.Body.ToString());
-                sb.AppendLine("<\n>" + item.FullBody);
+                sb.AppendLine("<br/>" + item.FullBody);
             }
             ViewBag.Result = sb.ToString();
 
@@ -106,7 +106,7 @@ namespace FrontEndApplication.Controllers
                     string messageId = rnd.Next(10000, 99999).ToString();
 
                     // Save the image to the blob storage (Don't need to await this)
-                    SaveToBlobAsync(subDomain, messageId);
+                    await SaveToBlobAsync(subDomain, messageId);
 
                     // Generate the message for the service bus queue
                     // Message format subdomain;messageId;numberOfMessagesInBatch;fakeCpuValueToBeUsed;fakeMemoryValueToBeUsed
