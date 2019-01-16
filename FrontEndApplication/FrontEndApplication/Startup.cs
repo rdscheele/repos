@@ -56,7 +56,7 @@ namespace FrontEndApplication
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Well}/{action=Index}/{id?}");
             });
         }
     }

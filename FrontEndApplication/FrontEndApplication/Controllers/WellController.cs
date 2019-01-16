@@ -11,11 +11,13 @@ using Microsoft.Azure.ServiceBus;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
+using FrontEndApplication.Models;
 
 namespace FrontEndApplication.Controllers
 {
     public class WellController : Controller
     {
+        // These variables need changing if ran on your PC.
         private static readonly string serviceBusKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\service_bus_key.txt");
         private static readonly string storageAccountKey = System.IO.File.ReadAllText(@"C:\Users\r.d.scheele\OneDrive - Betabit\Keys\storage_account_key.txt");
         // Create service bus connection
@@ -34,12 +36,22 @@ namespace FrontEndApplication.Controllers
         public IActionResult SendMessage(string size)
         {
             MainAsync(size).GetAwaiter().GetResult();
-            ViewBag.Result = "Items with a " + size + " size have created messages and have been send to the service bus!";
+
+            List<MessageObject> messageList = (List<MessageObject>)TempData["messagelist"];
+            string messageString = "Items with a " + size + " size have created messages and have been send to the service bus!";
+            //string[] stringList = new string[] { "Items with a " + size + " size have created messages and have been send to the service bus!" };
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(messageString);
+            foreach (MessageObject item in messageList){
+                //stringList.Append(item.Body.ToString());
+                sb.AppendLine("<\n>" + item.FullBody);
+            }
+            ViewBag.Result = sb.ToString();
 
             return View("Index");
         }
 
-        private static async Task MainAsync(string messageSize)
+        private async Task MainAsync(string messageSize)
         {
             queueClient = new QueueClient(serviceBusConnectionString, queueName);
 
@@ -50,11 +62,13 @@ namespace FrontEndApplication.Controllers
         }
 
         // Send and upload messages
-        private static async Task SendMessagesAsync(string messageSize)
+        private async Task SendMessagesAsync(string messageSize)
         {
             Random rnd = new Random();
             // Create storage container for the incoming messages
             string subDomain = rnd.Next(1000000, 9999999).ToString();
+
+            List<MessageObject> messageList = new List<MessageObject>();
 
             // Create a blob container to save the message in
             await CreateBlobContainer(subDomain);
@@ -97,12 +111,16 @@ namespace FrontEndApplication.Controllers
                     // Generate the message for the service bus queue
                     // Message format subdomain;messageId;numberOfMessagesInBatch;fakeCpuValueToBeUsed;fakeMemoryValueToBeUsed
                     Message message = GenerateQueueMessage(subDomain, messageId, numberOfMessagesToSend, fakeCpu, fakeMemory);
+                    string fullBody = subDomain + ";" + messageId + ";" + numberOfMessagesToSend.ToString() + ";" + fakeCpu.ToString() + ";" + fakeMemory.ToString();
+                    MessageObject messageObject = new MessageObject(fullBody, subDomain, messageId, numberOfMessagesToSend.ToString(), fakeCpu.ToString(), fakeMemory.ToString());
+                    messageList.Add(messageObject);
 
                     // Send the message to the queue.
                     await queueClient.SendAsync(message);
 
-                    //await Task.Delay(5000);
+                    await Task.Delay(500);
                 }
+                TempData["messagelist"] = messageList;
             }
             catch
             {
